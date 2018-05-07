@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+   integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+   crossorigin=""/>
+   
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+ <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+   integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+   crossorigin=""></script>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="leaflet/MarkerCluster.css" />
+	<link rel="stylesheet" href="leaflet/MarkerCluster.Default.css" />
+	<script src="leaflet/leaflet.markercluster-src.js"></script>
+    
+
+    <style>
+      html, body, #map {
+         height: 100%;
+            width: 100%;
+        
+      }
+      
+      #reloadButton {
+	line-height: 12px;	  
+	margin-top: 1px;
+	margin-right: 2px;
+	position:absolute;
+	top:10px;
+	right:0;
+      }
+    </style>
+
+    <title>SensoricNet :: Maps</title>
+  </head>
+  <body>
+    <h2>SensoricNet Maps</h2>
+    <button id="reloadButton" onclick="javascript:loadPoi();">Reload</button>
+    <div id="map" class="map"></div>
+    <div id="wait" style="display:none;width:30px;height:30px;border:0px solid black;position:absolute;top:3px;left:50%;padding:2px;"><img src='ajax-loading.gif' width="30" height="30" /><br>Loading..</div>
+    <script type="text/javascript">
+      var mymap = L.map('map').setView([49.828611, 18.274069], 4);
+      var markers = L.markerClusterGroup();
+          
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	  maxZoom: 18
+      }).addTo(mymap);
+
+      mymap.addLayer(markers);
+    
+      function loadPoi(){
+      
+	markers.clearLayers();
+      
+        $("#wait").css("display", "block");
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+	  if (this.readyState == 4 && this.status == 200) {	  
+	    var obj = JSON.parse(this.responseText);
+	    showPoi(obj);
+	     $("#wait").css("display", "none");
+	  }
+	};
+	xhttp.open("GET", "https://lightstar.stud.slu.cz/api/sensors/map", true);
+	xhttp.send();
+    }
+    
+    function showPoi(obj){
+      if(obj){
+	for(var propt in obj){
+	  console.log(propt + ': ' + obj[propt] + ' :: ' + obj[propt].lat + ' :: ' + obj[propt].lng);
+	  var sensorsTxt = '<h3>'+propt+'</h3>';  
+	  sensorsTxt += '<b>Time:</b> ' + obj[propt].time;  
+	  sensorsTxt += '<ul>';  
+	  for(var s in obj[propt].sensors){
+	      var value = obj[propt].sensors[s];
+	      sensorsTxt += '<li>';
+
+	      sensorsTxt += '<b>'+value.fieldId + '</b>: ' + value.lastValue + ' ' + value.unitName;
+	      sensorsTxt += '</li>';
+	  }
+	  sensorsTxt += "</ul>"
+	  
+	  var marker = L.marker([obj[propt].lat, obj[propt].lng]).bindPopup(sensorsTxt);
+	  markers.addLayer(marker);
+	}
+      }
+    }   
+    loadPoi();
+    </script>
+  </body>
+</html>
