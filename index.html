@@ -77,9 +77,8 @@
 	  var sensorsTxt = '<h3>Sensor name: '+propt+'</h3>';  
 	  sensorsTxt += '<b>Last seen:</b> ' + obj[propt].time + '<br/>';
 	  if(obj[propt].url){
-		  sensorsTxt += '<b>Details:</b> <a href="' + obj[propt].url + '" target="_blank">Grafana dashboard</a><br/>';
+		  sensorsTxt += '<b>Details:</b> <a href="' + obj[propt].url + '" target="_blank">&#x1f517;Grafana dashboard</a><br/>';
 	  }
-	  sensorsTxt += '<b>Values:</b>';
 	  sensorsTxt += '<ul>';  
 	  for(var s in obj[propt].sensors){
 	      var value = obj[propt].sensors[s];
