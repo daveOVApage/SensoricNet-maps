@@ -74,13 +74,16 @@
       if(obj){
 	for(var propt in obj){
 	  console.log(propt + ': ' + obj[propt] + ' :: ' + obj[propt].lat + ' :: ' + obj[propt].lng);
-	  var sensorsTxt = '<h3>'+propt+'</h3>';  
-	  sensorsTxt += '<b>Time:</b> ' + obj[propt].time;  
+	  var sensorsTxt = '<h3>Sensor name: '+propt+'</h3>';  
+	  sensorsTxt += '<b>Last seen:</b> ' + obj[propt].time;
+	  if(obj[propt].url){
+		  sensorsTxt += '<b>Details:</b> ' + obj[propt].url;
+	  }
+	  sensorsTxt += '<b>Values:</b>';
 	  sensorsTxt += '<ul>';  
 	  for(var s in obj[propt].sensors){
 	      var value = obj[propt].sensors[s];
 	      sensorsTxt += '<li>';
-
 	      sensorsTxt += '<b>'+value.fieldId + '</b>: ' + value.lastValue + ' ' + value.unitName;
 	      sensorsTxt += '</li>';
 	  }
