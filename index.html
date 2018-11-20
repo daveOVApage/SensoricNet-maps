@@ -45,12 +45,12 @@
     <script type="text/javascript">
       var mymap = L.map('map').setView([49.828611, 18.274069], 4);
       var markers = L.markerClusterGroup();
-          
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+
+      L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png', {
 	  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 	  maxZoom: 18
       }).addTo(mymap);
-
+          
       mymap.addLayer(markers);
     
       function loadPoi(){
@@ -74,15 +74,13 @@
       if(obj){
 	for(var propt in obj){
 	  console.log(propt + ': ' + obj[propt] + ' :: ' + obj[propt].lat + ' :: ' + obj[propt].lng);
-	  var sensorsTxt = '<h3>Sensor name: '+propt+'</h3>';  
-	  sensorsTxt += '<b>Last seen:</b> ' + obj[propt].time + '<br/>';
-	  if(obj[propt].url){
-		  sensorsTxt += '<b>Details:</b> <a href="' + obj[propt].url + '" target="_blank">&#x1f517;Grafana dashboard</a><br/>';
-	  }
+	  var sensorsTxt = '<h3>'+propt+'</h3>';  
+	  sensorsTxt += '<b>Time:</b> ' + obj[propt].time;  
 	  sensorsTxt += '<ul>';  
 	  for(var s in obj[propt].sensors){
 	      var value = obj[propt].sensors[s];
 	      sensorsTxt += '<li>';
+
 	      sensorsTxt += '<b>'+value.fieldId + '</b>: ' + value.lastValue + ' ' + value.unitName;
 	      sensorsTxt += '</li>';
 	  }
